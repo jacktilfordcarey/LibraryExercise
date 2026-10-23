@@ -12,7 +12,7 @@ The project is an old-style Java project with package folders at the repository 
 
 Anyone on the team should be able to build, test and run your version with a single command on a clean machine, with no IDE. How you achieve that is up to you.
 
-With Java 8 or newer available on `PATH` (or `JAVA_HOME` set), use:
+With Java 8 or newer installed (the build checks `JAVA_HOME`, `PATH`, and standard Windows JDK locations), use:
 
 ```bat
 build.bat test

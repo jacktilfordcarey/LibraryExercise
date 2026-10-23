@@ -7,11 +7,49 @@ $root = $PSScriptRoot
 $classes = Join-Path $root "build\classes"
 New-Item -ItemType Directory -Force -Path $classes | Out-Null
 
-$compiler = "javac"
-$runtime = "java"
+$compiler = $null
+$runtime = $null
+
 if ($env:JAVA_HOME) {
-    $compiler = Join-Path $env:JAVA_HOME "bin\javac.exe"
-    $runtime = Join-Path $env:JAVA_HOME "bin\java.exe"
+    $javaHomeCompiler = Join-Path $env:JAVA_HOME "bin\javac.exe"
+    if (Test-Path -LiteralPath $javaHomeCompiler) {
+        $compiler = $javaHomeCompiler
+        $runtime = Join-Path $env:JAVA_HOME "bin\java.exe"
+    }
+}
+
+if (-not $compiler) {
+    $pathCompiler = Get-Command "javac.exe" -ErrorAction SilentlyContinue
+    if ($pathCompiler) {
+        $compiler = $pathCompiler.Source
+        $runtimeCommand = Get-Command "java.exe" -ErrorAction SilentlyContinue
+        if ($runtimeCommand) {
+            $runtime = $runtimeCommand.Source
+        }
+    }
+}
+
+if (-not $compiler) {
+    $javaRoots = @(
+        (Join-Path $env:ProgramFiles "Java"),
+        (Join-Path $env:ProgramFiles "Eclipse Adoptium")
+    ) | Where-Object { $_ -and (Test-Path -LiteralPath $_) }
+
+    $jdkHomes = foreach ($javaRoot in $javaRoots) {
+        Get-ChildItem -LiteralPath $javaRoot -Directory -ErrorAction SilentlyContinue |
+            Where-Object { Test-Path -LiteralPath (Join-Path $_.FullName "bin\javac.exe") }
+    }
+    $jdkHome = $jdkHomes | Sort-Object Name -Descending | Select-Object -First 1
+    if ($jdkHome) {
+        $compiler = Join-Path $jdkHome.FullName "bin\javac.exe"
+        $runtime = Join-Path $jdkHome.FullName "bin\java.exe"
+    }
+}
+
+if (-not $compiler -or -not $runtime -or -not (Test-Path -LiteralPath $compiler) -or
+        -not (Test-Path -LiteralPath $runtime)) {
+    Write-Error "A Java JDK is required. Install JDK 8 or newer, add its bin folder to PATH, or set JAVA_HOME."
+    exit 1
 }
 
 $sourceDirectories = @("audit", "library", "loans", "reporting", "resources", "subscribers")
