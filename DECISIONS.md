@@ -19,5 +19,5 @@
 ## Rebuild / validation
 - I would use explicit domain types, immutable identifiers and dates, a transactional persistence layer, and integration contracts for audit and events rather than process-wide singleton extents and public mutable fields.
 - Assumed Java 8+ (the implementation uses `java.time`). Run `build.bat test` to compile and test, or `build.bat run` to compile and run the simulator.
-- I used an AI assistant to inspect the starter code, implement changes, and draft/run focused tests. I reviewed the resulting changes and remain responsible for them.
+- I used an AI assistant to inspect the starter code, implement changes and draft/run focused tests. I reviewed the generated changes and test results; I remain responsible for the code.
 - The supplied workspace was not a Git repository, so I initialized one and recorded the implementation separately from its build, tests and decisions.
