@@ -6,6 +6,7 @@
 - Overdue days now compare calendar dates across month/year boundaries. Game return surcharges are calculated per overdue day using the existing platform rates; books have no surcharge.
 - Reservations are held per resource in FIFO order, with Premium members inserted ahead of non-premium subscribers. A reservation is fulfilled only when its holder borrows the resource; holders can cancel.
 - File reports now use UTF-8, close each writer, and append each report section. The simulator registers file and console output services.
+- Outstanding-loan reports sort entries by their formatted description so report order is stable between runs.
 - Added a standalone build/test command and tests for borrowing limits, game eligibility, premium reservation priority, returns/fees, calendar boundaries, concurrent duplicate loans, and file output. These scenarios target the stated borrowing rules, transaction invariants, date arithmetic, and 50-librarian concurrency risk.
 
 ## Deliberately left / assumptions

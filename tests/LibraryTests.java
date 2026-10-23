@@ -1,9 +1,12 @@
 package tests;
 
 import audit.AuditLogger;
+import library.LibraryReportingService;
 import library.LibraryServices;
 import loans.Loan;
 import reporting.FileOutputService;
+import reporting.OutputService;
+import reporting.OutputServiceContributor;
 import resources.Resource;
 import subscribers.Pensioner;
 import subscribers.PremiumMember;
@@ -31,6 +34,7 @@ public class LibraryTests {
 		testOverdueAcrossMonthBoundary();
 		testConcurrentDuplicateLoan();
 		testFileOutputWritesMultipleReports();
+		testOutstandingLoansReportIsSorted();
 		System.out.println("Passed " + assertions + " assertions.");
 	}
 
@@ -176,6 +180,30 @@ public class LibraryTests {
 		} finally {
 			Files.deleteIfExists(report);
 		}
+	}
+
+	private static void testOutstandingLoansReportIsSorted() {
+		final List<String> loanLines = new java.util.ArrayList<String>();
+		LibraryReportingService reporting = new LibraryReportingService();
+		// Capture the report output to verify its order independently of the console.
+		reporting.addOutputService(new OutputService() {
+			public void outputExtent(String title, java.util.Collection contributors) {
+				if ("Loans".equals(title)) {
+					for (Object contributor : contributors) {
+						loanLines.add(((OutputServiceContributor)contributor).getFormattedString());
+					}
+				}
+			}
+
+			public String getName() {
+				return "Test output service";
+			}
+		});
+		reporting.outputOutstandingLoansReport();
+		List<String> sortedLoanLines = new java.util.ArrayList<String>(loanLines);
+		Collections.sort(sortedLoanLines);
+		check(loanLines.equals(sortedLoanLines),
+				"Outstanding loan reports must use a stable alphabetical order");
 	}
 
 	private static Resource book(String title) {

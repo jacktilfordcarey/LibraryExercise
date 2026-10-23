@@ -51,12 +51,17 @@ public class LibraryReportingService {
 	
 	public void outputOutstandingLoansReport() {
 		Collection<Loan> loans = LoanExtent.INSTANCE.getLoans();
-		Collection<Loan> outstandingLoans = new Vector<Loan>();
+		List<Loan> outstandingLoans = new ArrayList<Loan>();
 		for (Loan element : loans) {
 			if ( element.getReturnDate() == null ) {
 				outstandingLoans.add(element);
 			}
 		}
+		Collections.sort(outstandingLoans, new Comparator<Loan>() {
+			public int compare(Loan first, Loan second) {
+				return first.getFormattedString().compareTo(second.getFormattedString());
+			}
+		});
 		for (OutputService outputService : outputServices) {
 			try {
 				outputService.outputExtent("Loans", outstandingLoans);
