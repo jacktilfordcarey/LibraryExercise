@@ -31,6 +31,7 @@ public class FileOutputService implements OutputService {
 				throw new IllegalArgumentException("Report item does not provide formatted output");
 			}
 		}
+		// Append each report so multiple output calls share one complete report file.
 		try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8,
 				StandardOpenOption.CREATE, StandardOpenOption.APPEND)) {
 			writer.write(title);

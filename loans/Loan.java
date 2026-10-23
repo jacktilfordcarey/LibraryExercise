@@ -132,6 +132,7 @@ public class Loan  implements OutputServiceContributor {
 	}
 
 	private long daysBetween(GregorianCalendar start, GregorianCalendar end) {
+		// Compare calendar days, not day-of-month fields, across month/year boundaries.
 		LocalDate startDate = LocalDate.of(start.get(Calendar.YEAR), start.get(Calendar.MONTH) + 1,
 				start.get(Calendar.DAY_OF_MONTH));
 		LocalDate endDate = LocalDate.of(end.get(Calendar.YEAR), end.get(Calendar.MONTH) + 1,

@@ -28,6 +28,7 @@ public class LoanExtent {
 		} 
 	}
 	public synchronized Loan createLoan(Resource resource, Object subscriber, GregorianCalendar gregorianCalendar) throws Exception {
+		// Validate before changing either the resource or subscriber loan lists.
 		validateLoan(resource, subscriber, gregorianCalendar);
 		Loan loan = new Loan();
 		loan.setResource(resource);

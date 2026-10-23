@@ -58,6 +58,7 @@ public class LibraryServices {
 	}
 	
 	public Loan loanResourceToSubscriber(Resource resource, Object subscriber, GregorianCalendar gregorianCalendar) throws Exception {
+		// Keep validation, auditing, and the state change in one serialized operation.
 		synchronized (LoanExtent.INSTANCE) {
 			try {
 				LoanExtent.INSTANCE.validateLoan(resource, subscriber, gregorianCalendar);
@@ -71,6 +72,7 @@ public class LibraryServices {
 	}
 
 	public double returnedResource(Loan loan, GregorianCalendar gregorianCalendar) {
+		// Record the assessed fee before closing the loan.
 		synchronized (LoanExtent.INSTANCE) {
 			try {
 				if (loan == null || LoanExtent.INSTANCE.findByPrimaryKey(loan.getId()) != loan) {

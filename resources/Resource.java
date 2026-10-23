@@ -79,6 +79,7 @@ public class Resource  implements OutputServiceContributor {
 			throw new IllegalStateException("Subscriber already has a reservation for this resource");
 		}
 		if (subscriber instanceof subscribers.PremiumMember) {
+			// Premium holds precede standard holds; each group remains FIFO.
 			int firstNonPremium = 0;
 			while (firstNonPremium < reservations.size()
 					&& reservations.get(firstNonPremium) instanceof subscribers.PremiumMember) {
